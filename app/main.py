@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 from fastapi.responses import RedirectResponse
+from fastapi import HTTPException
 import random
 import string
 
@@ -85,6 +86,13 @@ def redirect_url(
     ).first()
 
     if not url_entry:
-        return {"error": "Short URL not found"}
+        raise HTTPException(
+            status_code=404,
+            detail="Short URL not found"
+        )
+
+    url_entry.clicks += 1
+
+    db.commit()
 
     return RedirectResponse(url=url_entry.original_url)

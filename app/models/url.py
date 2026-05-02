@@ -9,4 +9,6 @@ class URL(Base):
 
     original_url = Column(String, nullable=False)
 
-    short_code = Column(String, unique=True, nullable=False)
+    short_code = Column(String, unique=True, nullable=False,index=True)
+
+    clicks = Column(Integer, default=0)
