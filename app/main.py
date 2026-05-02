@@ -54,10 +54,11 @@ def create_short_url(
     if existing_url:
         return {
             "original_url": existing_url.original_url,
-            "short_code": existing_url.short_code
+            "short_code": existing_url.short_code,
+            "short_url": f"https://url-shortener-rkyb.onrender.com/{existing_url.short_code}"
         }
     
-    short_code = short_code = generate_unique_short_code(db)
+    short_code = generate_unique_short_code(db)
     
 
     new_url = URL(
