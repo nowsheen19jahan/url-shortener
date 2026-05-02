@@ -11,6 +11,19 @@ from app.schemas.url import URLCreate
 
 app = FastAPI()
 
+# Middleware 
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # for development
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 Base.metadata.create_all(bind=engine)
 
 # Helper Function for Regeneration of short code in case of duplicate
