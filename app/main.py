@@ -73,7 +73,8 @@ def create_short_url(
 
     return {
         "original_url": new_url.original_url,
-        "short_code": new_url.short_code
+        "short_code": short_code,
+        "short_url": f"https://url-shortener-rkyb.onrender.com/{short_code}"
     }
 
 @app.get("/{short_code}")
