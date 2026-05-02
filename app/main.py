@@ -8,6 +8,7 @@ import string
 from app.db.database import engine, Base, get_db
 from app.models.url import URL
 from app.schemas.url import URLCreate
+from urllib.parse import urlparse
 
 app = FastAPI()
 
@@ -44,7 +45,26 @@ def generate_unique_short_code(db: Session):
         if not existing_code:
             return short_code
 
+def is_valid_url(url: str):
+    try:
+        result = urlparse(url)
 
+        # must have scheme + domain
+        if not result.scheme or not result.netloc:
+            return False
+
+        # only allow http/https
+        if result.scheme not in ["http", "https"]:
+            return False
+
+        # domain must be meaningful
+        if len(result.netloc) < 3:
+            return False
+
+        return True
+
+    except:
+        return False
 
 @app.get("/")
 def home():
@@ -58,8 +78,16 @@ def create_short_url(
     request: URLCreate,
     db: Session = Depends(get_db)
 ):
+    if not is_valid_url(request.original_url):
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid URL format"
+        )
+
     # if the same url is in db , we don't generate new short code, rather ouput the existing code
     #  IDEMPOTENCY
+
+
     existing_url = db.query(URL).filter(
     URL.original_url == request.original_url
     ).first()
